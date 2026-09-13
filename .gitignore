@@ -1,0 +1,14 @@
+node_modules/
+npm-debug.log*
+pnpm-debug.log*
+yarn-error.log*
+
+# Local scratch space used while reverse-engineering DSH Desktop; never shipped.
+.scratch/
+
+# Editor and OS noise
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json

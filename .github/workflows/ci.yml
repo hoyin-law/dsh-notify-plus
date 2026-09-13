@@ -1,0 +1,45 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # DSH Desktop requires Node 22.19+; 24 is the current packaged runtime.
+        node: ["22.19.0", "24.x"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Install the harness-provided peer
+        run: npm install --no-audit --no-fund --ignore-scripts
+
+      - name: Unit tests
+        run: npm test
+
+      - name: Bundle manifest smoke test
+        # The loader resolves the patch through the manifest field, so a typo
+        # there is a boot failure rather than a lint error.
+        run: |
+          node --input-type=module -e '
+            import { readFileSync } from "node:fs";
+            const manifest = JSON.parse(readFileSync("package.json", "utf8"));
+            if (manifest.dsh?.bundle?.patch !== "./cordis.patch.yml") throw new Error("bundle patch is not declared");
+            if (manifest.main !== "lib/index.js") throw new Error("main entry drifted");
+            readFileSync(manifest.dsh.bundle.patch, "utf8");
+            const plugin = await import("./lib/index.js");
+            if (plugin.name !== "dsh-notify-plus") throw new Error("plugin name drifted");
+            if (typeof plugin.apply !== "function") throw new Error("apply() is missing");
+            if (!Array.isArray(plugin.inject) || !plugin.inject.includes("desktopRuntime")) throw new Error("desktopRuntime must be a hard dependency");
+            console.log("manifest and plugin entry OK");
+          '

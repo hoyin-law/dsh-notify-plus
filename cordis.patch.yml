@@ -1,0 +1,20 @@
+# dsh-notify-plus bundle patch.
+#
+# Bundle layers compose in `dsh.profile.bundles` order, and DSH Desktop splices
+# its own launcher-owned layer in right after `@deepseek-ai/dsh-web-app`.
+# A third-party bundle therefore lands *after* `dsh-plugin-desktop`, so an
+# id-targeted patch here wins over the built-in row.
+#
+# 1. Silence the built-in `desktop-notifications` row. Its copy is hard-coded
+#    ("User Turn Completed" / "用户回合已完成") and cannot name the
+#    conversation, which is exactly the confusion this plugin removes.
+#    Patching an absent row is a warning rather than an error, so this entry
+#    stays inert on a host that is not DSH Desktop.
+# 2. Insert this plugin's own row, which reads the same settings namespace and
+#    therefore appears behind the same Desktop toggles.
+- id: desktop-notifications
+  disabled: true
+
+- insert:
+    - id: dsh-notify-plus
+      name: dsh-notify-plus

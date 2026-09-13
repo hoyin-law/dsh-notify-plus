@@ -1,0 +1,8 @@
+# Normalize line endings in the repository. DSH Desktop runs on Windows, but
+# the source is plain ESM and Markdown, so LF in-tree keeps diffs and CI honest.
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.ico binary
+*.zip binary
