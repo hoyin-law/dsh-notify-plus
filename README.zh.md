@@ -173,8 +173,31 @@ lib/
   settings.js    共享的 dsh-desktop-notifications 命名空间
 cordis.patch.yml 随包补丁：禁用内置行，插入本插件行
 scripts/
-  verify-layering.mjs  用真实的 dsh CLI 合成补丁层级
+  verify-layering.mjs     用真实的 dsh CLI 合成补丁层级
+tools/
+  asar.mjs                从 app.asar 中读取 harness 接口
+  read-windows-toasts.mjs 从 Windows 通知历史库中读回已投递的通知
 ```
+
+### 在真机上验证
+
+DSH Desktop 窗口聚焦时 `notifyAttention` 会直接返回，而它弹的是 Electron
+`Notification`，应用日志里不留痕——所以在窗口聚焦的情况下测试，看起来会像「什么都没
+发生」。唯一可靠的检查是读 shell 自己的通知历史：
+
+```powershell
+node tools/read-windows-toasts.mjs --limit 10
+```
+
+替换成功时应该看到切点正好落在重启那一刻：
+
+```
+2026/9/14 04:33:35  title="MasterGo 原型功能能力评估"  body="先纠正我上一条的一个错误建议。"
+2026/9/14 04:23:24  title="用户回合已完成"  body="一个由你发起的回合已完成。"
+```
+
+每回合一条、标题是真实会话名、正文是 14 个字的提炼；而且硬编码那条是**在重启处停
+止**出现的，不是与新通知并存——这才证明内置观察者是被真正禁用，而不只是被并列。
 
 ## 许可证
 

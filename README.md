@@ -191,8 +191,34 @@ lib/
   settings.js    the shared dsh-desktop-notifications namespace
 cordis.patch.yml bundle patch: disable the built-in row, insert this one
 scripts/
-  verify-layering.mjs  composes the real patch layers through the dsh CLI
+  verify-layering.mjs     composes the real patch layers through the dsh CLI
+tools/
+  asar.mjs                reads harness interfaces out of app.asar
+  read-windows-toasts.mjs reads delivered toasts out of the Windows history DB
 ```
+
+### Verifying a live install
+
+`notifyAttention` returns early while the DSH Desktop window is focused, and it
+raises an Electron `Notification` that leaves no application log line — so a
+focused test can look like a no-op. The only reliable check is the shell's own
+toast history:
+
+```powershell
+node tools/read-windows-toasts.mjs --limit 10
+```
+
+A working replacement looks like this, with the cutover exactly at the restart:
+
+```
+2026/9/14 04:33:35  title="MasterGo 原型功能能力评估"  body="先纠正我上一条的一个错误建议。"
+2026/9/14 04:23:24  title="用户回合已完成"  body="一个由你发起的回合已完成。"
+```
+
+One row per turn, the title is a real conversation name, the body is a 14
+character distillation, and the hard-coded row stops appearing at the restart
+rather than alongside the new one — which is what proves the built-in observer
+was disabled instead of merely joined.
 
 ## License
 
