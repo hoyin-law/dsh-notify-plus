@@ -211,14 +211,14 @@ node tools/read-windows-toasts.mjs --limit 10
 A working replacement looks like this, with the cutover exactly at the restart:
 
 ```
-2026/9/14 04:33:35  title="MasterGo 原型功能能力评估"  body="先纠正我上一条的一个错误建议。"
+2026/9/14 04:33:35  title="重构通知插件"   body="已经修复了通知排序逻辑，现在会优先…"
 2026/9/14 04:23:24  title="用户回合已完成"  body="一个由你发起的回合已完成。"
 ```
 
-One row per turn, the title is a real conversation name, the body is a 14
-character distillation, and the hard-coded row stops appearing at the restart
-rather than alongside the new one — which is what proves the built-in observer
-was disabled instead of merely joined.
+One row per turn, the title is a real conversation name, the body is a truncated
+distillation rather than a fixed sentence, and the hard-coded row stops appearing
+at the restart rather than alongside the new one — which is what proves the
+built-in observer was disabled instead of merely joined.
 
 ## License
 
