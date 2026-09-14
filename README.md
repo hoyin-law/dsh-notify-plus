@@ -158,6 +158,62 @@ rather than silently dropping notifications — `desktopRuntime` is a declared
 hard dependency, so the row waits for the Desktop shell instead of activating
 blind. Please open an issue with your DSH Desktop version if that happens.
 
+## DSH STORE status
+
+This plugin is **not listed in [DSH STORE](https://dsh.store/)**. The store's
+automated policy declines any bundle patch that disables a shipped entry, and
+disabling one is exactly what makes this plugin work: without it, the built-in
+`desktop-notifications` row keeps raising its own toast, and the two plugins
+cannot coexist at all — both register the `dsh-desktop-notifications` settings
+namespace, and `settings.register()` throws on a duplicate, so the second one
+fails its row.
+
+That is a deliberate, documented trade rather than an oversight:
+
+- The row this plugin disables belongs to `dsh-plugin-desktop` (the DSH Desktop
+  launcher), not to a `@deepseek-ai/*` package. No official harness package,
+  entry ID, or namespace is modified.
+- The replacement is exact: the plugin re-registers the same settings namespace
+  with the same five keys, so the Desktop switches keep working and no user
+  preference is lost.
+- Install and start were verified end to end on DSH Desktop 2.0.3; see
+  [Verifying a live install](#verifying-a-live-install).
+
+Install it from the repository instead:
+
+```powershell
+dsh plugin --profile <your-profile> add https://github.com/hoyin-law/dsh-notify-plus
+```
+
+A future release may make the disable an explicit opt-in in the user's own
+profile layer, which would let the bundle patch become purely additive. That
+needs the plugin to fall back to its own settings namespace when the built-in
+row is still present, so it is a behaviour change rather than a packaging tweak.
+
+### Declared compatibility
+
+`package.json` carries a per-release declaration under
+`dsh.compatibility.dshReleases`. Every entry is either runtime-verified or
+interface-verified against the published package — never assumed:
+
+| DSH release | Basis |
+| --- | --- |
+| `0.1.1-rc.2` | runtime-verified: installed into a live `web` profile on DSH Desktop 2.0.3 and observed raising correctly-shaped toasts |
+| `0.1.5-alpha.2` | interface-verified: every consumed surface has an identical signature and payload shape |
+| `0.1.5-rc.1` | interface-verified: same |
+| `0.1.5-rc.2` | interface-verified: same |
+
+"Interface-verified" means the four surfaces this plugin consumes —
+`sessions.on("session/event")` with the `turn/start`, `turn/end`,
+`assistant/message`, and `user/message` payloads; `sessionTitle.get(session)`;
+`jobs.onJobDone(snapshot)` with `JobSnapshot.label`; and
+`settings.register(ns, schema, options)` — were diffed against each release's
+published types and sources and found unchanged. It is a source-level claim, not
+a runtime acceptance, and it is labelled as such.
+
+Only `win32` and the DSH Desktop host are declared. The notification path is
+platform-neutral, but nothing else has been run.
+
 ## Development
 
 ```powershell

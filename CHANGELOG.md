@@ -7,6 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-09-14
+
+Packaging and contract metadata only; no runtime behaviour changed.
+
+### Added
+
+- `dsh.compatibility` in the manifest: a per-release `dshReleases` declaration
+  covering `0.1.1-rc.2`, `0.1.5-alpha.2`, `0.1.5-rc.1`, and `0.1.5-rc.2`, plus
+  the Node.js range, the `win32` system, and the DSH Desktop host. Each entry is
+  either runtime-verified (`0.1.1-rc.2`, installed into a live profile on DSH
+  Desktop 2.0.3 and observed raising correctly-shaped toasts) or
+  interface-verified (the four consumed surfaces diffed against each release's
+  published types and sources and found unchanged).
+- `docs/upstream-request.md`, a ready-to-file request for a supported
+  notification-copy seam upstream, so a future release can stop disabling a
+  launcher-owned entry.
+- A DSH STORE status section in both READMEs explaining why this plugin is not
+  listed: the store declines bundle patches that disable a shipped entry, and
+  disabling one is what makes the replacement possible, because both plugins
+  register the same settings namespace and `settings.register()` throws on a
+  duplicate.
+
 ## [0.1.0] - 2026-09-14
 
 First release.
@@ -34,5 +56,6 @@ First release.
   turn/job state machine, plus `npm run verify:layering` to compose the real
   patch layers through the `dsh` CLI.
 
-[Unreleased]: https://github.com/hoyin-law/dsh-notify-plus/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/hoyin-law/dsh-notify-plus/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/hoyin-law/dsh-notify-plus/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/hoyin-law/dsh-notify-plus/releases/tag/v0.1.0

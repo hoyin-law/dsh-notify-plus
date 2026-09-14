@@ -143,6 +143,52 @@ export const DEFAULT_LIMITS = Object.freeze({
 ——`desktopRuntime` 是声明的硬依赖，行会等待 Desktop shell 而不是盲目激活。若真
 的发生，请附上你的 DSH Desktop 版本开 issue。
 
+## DSH STORE 上架状态
+
+本插件**未在 [DSH STORE](https://dsh.store/) 上架**。商城的自动策略会拒绝任何「禁用随发行
+组件」的 bundle patch，而禁用正是本插件能工作的前提：不禁用，内置的
+`desktop-notifications` 行会继续弹它自己那条通知，而且两个插件根本无法共存——它们注册的是
+同一个 `dsh-desktop-notifications` 设置命名空间，`settings.register()` 遇到重复会直接抛错，
+后注册的那一行会激活失败。
+
+这是明确记录的取舍，不是疏漏：
+
+- 被禁用的是 `dsh-plugin-desktop`（DSH Desktop launcher）自带的行，不属于任何
+  `@deepseek-ai/*` 包。没有修改任何官方 harness 包、entry ID 或命名空间。
+- 替换是等价的：本插件用同样的五个键重新注册同一个设置命名空间，Desktop 上的开关继续有
+  效，用户已有偏好不丢失。
+- 安装与启动已在 DSH Desktop 2.0.3 上端到端验证，见[在真机上验证](#在真机上验证)。
+
+请从仓库安装：
+
+```powershell
+dsh plugin --profile <你的 profile> add https://github.com/hoyin-law/dsh-notify-plus
+```
+
+后续版本可能把「禁用」改为用户在**自己的** profile 层显式开启的选项，那时 bundle patch 就能
+变成纯新增。但那需要插件在内置行仍存在时回退到自有设置命名空间，属于行为变更而非打包调整。
+
+### 兼容性声明
+
+`package.json` 通过 `dsh.compatibility.dshReleases` 提供逐版本声明。每一条都是**运行验证**或
+**接口验证**的结论，没有靠假设：
+
+| DSH 版本 | 依据 |
+| --- | --- |
+| `0.1.1-rc.2` | 运行验证：装进 DSH Desktop 2.0.3 上真实 `web` profile，并观测到形状正确
+的通知 |
+| `0.1.5-alpha.2` | 接口验证：所有被消费的接口签名与载荷形状完全一致 |
+| `0.1.5-rc.1` | 接口验证：同上 |
+| `0.1.5-rc.2` | 接口验证：同上 |
+
+「接口验证」指本插件消费的四个界面——`sessions.on("session/event")` 及其
+`turn/start`、`turn/end`、`assistant/message`、`user/message` 载荷；`sessionTitle.get(session)`；
+`jobs.onJobDone(snapshot)` 与 `JobSnapshot.label`；以及 `settings.register(ns, schema, options)`
+——已逐个与各版本已发布的类型与源码比对，确认未变。这是**来源层**的结论，不是运行时验收，
+并且按此标注。
+
+只声明了 `win32` 与 DSH Desktop 宿主。通知链路本身与平台无关，但其余组合没有实际跑过。
+
 ## 开发
 
 ```powershell

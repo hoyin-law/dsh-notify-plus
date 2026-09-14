@@ -1,6 +1,6 @@
 {
   "name": "dsh-notify-plus",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Context-rich native notifications for DSH Desktop: the toast title is the live conversation title and the body is a one-line distillation of what the turn produced.",
   "license": "MIT",
   "type": "module",
@@ -12,6 +12,22 @@
   "dsh": {
     "bundle": {
       "patch": "./cordis.patch.yml"
+    },
+    "compatibility": {
+      "dsh": ">=0.1.1-rc.2 <0.2.0",
+      "node": ">=22.19.0",
+      "systems": [
+        "win32"
+      ],
+      "profiles": [
+        "desktop"
+      ],
+      "dshReleases": {
+        "0.1.1-rc.2": "compatible",
+        "0.1.5-alpha.2": "compatible",
+        "0.1.5-rc.1": "compatible",
+        "0.1.5-rc.2": "compatible"
+      }
     }
   },
   "files": [
