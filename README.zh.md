@@ -109,6 +109,22 @@ DSH Desktop 宿主上这段补丁保持惰性，而不会中断启动。
 
 DSH Desktop 在窗口聚焦时本来就会抑制通知，因此你正在盯着看的工作不会打扰你。
 
+### 一个已知的上游问题
+
+在带有 `profile-preferences` 记录的 DSH Desktop 版本上，**设置 → 通知**里的改动可能在下次
+启动时被还原。桌面端把 `mode`、`openBrowser`、`networkExposure`、`notifications` 私下存了一份
+在 `<userData>/profile-preferences/<profileHash>/state.json`，启动时镜像回
+`settings.yaml`，而设置页只写 `settings.yaml`。本插件读到什么就用什么，因此会像内置行一样
+继承这个还原。
+
+上游已记录为
+[issue #947](https://github.com/anywhere-labs/deepseek-harness-desktop/issues/947)。
+DSH Desktop 2.0.3 不含该机制、不受影响；报告针对的是 2.0.9，镜像代码在晚于 2.0.3 的某个版本
+才出现。
+
+这里**刻意不做规避**。那份记录是另一个组件的私有真源：插件去写它，等于给一份同时装着用户
+浏览器与网络暴露选择权的单文档记录增加第二个写入方。
+
 ## 正文是怎么来的
 
 `lib/summarize.js` 无依赖且完全确定，流程为：

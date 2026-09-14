@@ -122,6 +122,27 @@ this plugin unchanged:
 DSH Desktop already suppresses notifications while its window is focused, so
 nothing fires for work you are watching.
 
+### A known upstream caveat
+
+On DSH Desktop releases that ship the `profile-preferences` record, edits made
+in **Settings → Notifications** may revert on the next launch. The desktop keeps
+a private copy of `mode`, `openBrowser`, `networkExposure`, and `notifications`
+under `<userData>/profile-preferences/<profileHash>/state.json` and mirrors it
+back into `settings.yaml` at startup, while the settings page only writes
+`settings.yaml`. This plugin reads whatever the document says, so it inherits the
+revert exactly as the built-in row does.
+
+Tracked upstream as
+[issue #947](https://github.com/anywhere-labs/deepseek-harness-desktop/issues/947).
+DSH Desktop 2.0.3 does not contain that mechanism and is unaffected; the report
+is against 2.0.9, and the mirroring code first appears in a later release than
+2.0.3.
+
+This is deliberately **not** worked around here. That record is another
+component's private source of truth: writing it from a plugin would add a second
+writer to a single-document record that also holds the user's browser and
+network-exposure choices.
+
 ## What the body line is
 
 `lib/summarize.js` is dependency-free and deterministic. It:
