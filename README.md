@@ -190,6 +190,21 @@ profile layer, which would let the bundle patch become purely additive. That
 needs the plugin to fall back to its own settings namespace when the built-in
 row is still present, so it is a behaviour change rather than a packaging tweak.
 
+### Upstream status
+
+The capability this plugin adds is being implemented natively. Upstream `master`
+still ships the hard-coded copy, but
+[PR #969](https://github.com/anywhere-labs/deepseek-harness-desktop/pull/969)
+adds session titles as notification headings plus a final-answer preview, and
+[issue #951](https://github.com/anywhere-labs/deepseek-harness-desktop/issues/951)
+asks for host-level governance of third-party plugin notifications.
+[`docs/upstream-request.md`](docs/upstream-request.md) records the duplicate
+check that stopped us filing a new request, the relevant threads, and what is
+worth contributing to them.
+
+If that work lands in a DSH Desktop release, this plugin should be retired
+rather than kept alive by disabling an official row that is already correct.
+
 ### Declared compatibility
 
 `package.json` carries a per-release declaration under

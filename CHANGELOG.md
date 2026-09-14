@@ -20,9 +20,13 @@ Packaging and contract metadata only; no runtime behaviour changed.
   Desktop 2.0.3 and observed raising correctly-shaped toasts) or
   interface-verified (the four consumed surfaces diffed against each release's
   published types and sources and found unchanged).
-- `docs/upstream-request.md`, a ready-to-file request for a supported
-  notification-copy seam upstream, so a future release can stop disabling a
-  launcher-owned entry.
+- `docs/upstream-request.md`: the duplicate check that stopped us filing a new
+  upstream request, the relevant open threads (`#969` PR for native session
+  titles and answer previews, `#951` for host-level governance of plugin
+  notifications, `#947` for `dsh-desktop.*` settings that do not persist), and
+  two comment drafts worth contributing to them. Both READMEs now state that
+  this plugin should be retired once that work ships rather than kept alive by
+  disabling an official row that is already correct.
 - A DSH STORE status section in both READMEs explaining why this plugin is not
   listed: the store declines bundle patches that disable a shipped entry, and
   disabling one is what makes the replacement possible, because both plugins

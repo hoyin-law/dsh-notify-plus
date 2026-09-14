@@ -168,6 +168,19 @@ dsh plugin --profile <你的 profile> add https://github.com/hoyin-law/dsh-notif
 后续版本可能把「禁用」改为用户在**自己的** profile 层显式开启的选项，那时 bundle patch 就能
 变成纯新增。但那需要插件在内置行仍存在时回退到自有设置命名空间，属于行为变更而非打包调整。
 
+### 上游进展
+
+本插件补上的这个能力正在被原生实现。上游 `master` 目前仍是硬编码文案，但
+[PR #969](https://github.com/anywhere-labs/deepseek-harness-desktop/pull/969)
+已经为通知标题接入会话标题、并为回合完成加上最终回答预览，
+[issue #951](https://github.com/anywhere-labs/deepseek-harness-desktop/issues/951)
+则在要求 host 侧统一治理第三方插件通知。
+[`docs/upstream-request.md`](docs/upstream-request.md) 记录了让我们**没有**另开
+issue 的查重结果、相关线索，以及值得贡献给这些讨论的实证。
+
+这项工作一旦进入 DSH Desktop 发行版，本插件应当**退役**，而不是靠禁用一个已经正确的官方行
+继续存在。
+
 ### 兼容性声明
 
 `package.json` 通过 `dsh.compatibility.dshReleases` 提供逐版本声明。每一条都是**运行验证**或
